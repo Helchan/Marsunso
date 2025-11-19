@@ -1,0 +1,434 @@
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 自定义CSS变量 - 液态玻璃设计语言 */
+:root {
+  /* ===== 背景色系 - 冷色调轻量化 ===== */
+  --bg-primary: #f5f7fa;              /* 主背景：极浅蓝灰，科技感 */
+  --bg-secondary: #ffffff;            /* 卡片背景：纯白 */
+  --bg-tertiary: #edf2f7;             /* 三级背景：浅蓝灰 */
+  --bg-glass: rgba(255, 255, 255, 0.85); /* 毛玻璃：增强通透度 */
+  
+  /* ===== 文本色系 - 冷灰调层次 ===== */
+  --text-primary: #1a202c;            /* 主文本：深冷灰 */
+  --text-secondary: #718096;          /* 次要文本：中灰 */
+  --text-tertiary: #a0aec0;           /* 三级文本：浅灰 */
+  
+  /* ===== 品牌色 - 科技蓝青紫三色体系 ===== */
+  /* 主色：科技蓝 - 专业智能 */
+  --accent-blue: #0ea5e9;             /* 核心蓝：明亮天蓝(Cyan-Blue) */
+  --accent-blue-light: #38bdf8;       /* 亮蓝：高亮专用 */
+  --accent-blue-deep: #0284c7;        /* 深蓝：强调边框 */
+  
+  /* 辅助色：青绿 - 速度活力 */
+  --accent-cyan: #06b6d4;             /* 青色：科技光效 */
+  --accent-teal: #14b8a6;             /* 青绿：活力点缀 */
+  
+  /* 点缀色：霓虹紫 - 未来感互补色 */
+  --accent-purple: #a78bfa;           /* 柔和紫：渐变搭配 */
+  --accent-purple-bright: #c084fc;    /* 明亮紫：高光效果 */
+  
+  /* ===== 光晕与阴影 - 青蓝渐变系统 ===== */
+  --glow-blue: rgba(14, 165, 233, 0.18);      /* 蓝色光晕 */
+  --glow-cyan: rgba(6, 182, 212, 0.15);       /* 青色光晕 */
+  --glow-purple: rgba(167, 139, 250, 0.12);   /* 紫色光晕 */
+  --shadow-light: rgba(0, 0, 0, 0.03);        /* 轻阴影 */
+  --shadow-medium: rgba(0, 0, 0, 0.06);       /* 中阴影 */
+  --shadow-strong: rgba(0, 0, 0, 0.1);        /* 强阴影 */
+  
+  /* ===== 边框色 - 细腻分隔 ===== */
+  --border-light: rgba(203, 213, 225, 0.5);   /* 轻边框：冷灰调 */
+  --border-medium: rgba(148, 163, 184, 0.3);  /* 中边框 */
+  --border-accent: rgba(14, 165, 233, 0.25);  /* 强调边框：科技蓝 */
+}
+
+body {
+  width: 550px;
+  min-width: 550px;
+  max-width: 550px;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* 搜索面板容器 - 毛玻璃效果 */
+.search-panel {
+  width: 550px;
+  min-width: 550px;
+  max-width: 550px;
+  background: linear-gradient(180deg, var(--bg-glass) 0%, rgba(255, 255, 255, 0.9) 100%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* 搜索框容器 - 固定不滚动 */
+.search-container {
+  position: relative;
+  padding: 10px 8px 8px 8px;
+  margin: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  margin: 0;
+  padding: 11px 16px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: none;
+  border-radius: 12px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  position: relative;
+  /* 默认状态：轻量内阴影边框 */
+  box-shadow: inset 0 0 0 1.5px var(--border-light),
+              0 2px 8px var(--shadow-light);
+}
+
+.search-input:focus {
+  background: var(--bg-secondary);
+  /* 聚焦状态：粗内发光（2.5px）+ 三层外光晕 - 强化视觉焦点 */
+  box-shadow: 0 0 0 4px var(--glow-cyan),          /* 外层青色光圈 4px */
+              0 0 24px var(--glow-blue),           /* 扩散蓝色光晕 */
+              0 4px 12px rgba(6, 182, 212, 0.2),   /* 底部投影 */
+              inset 0 0 0 2.5px var(--accent-cyan); /* 内发光粗边框 2.5px */
+  transform: translateY(-1px);
+}
+
+.search-input::placeholder {
+  color: var(--text-tertiary);
+  opacity: 1;
+}
+
+/* 搜索框光晕效果 - 轻柔渐变 */
+.search-glow {
+  display: none;
+}
+
+/* 下拉列表容器 - 独立滚动区域 */
+.results-list {
+  margin: 0;
+  padding: 2px 10px 2px 10px;
+  max-height: 463px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: transparent;
+  position: relative;
+}
+
+/* 滚动条样式 - 霓虹渐变科技感 */
+.results-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.results-list::-webkit-scrollbar-track {
+  background: rgba(203, 213, 225, 0.12);
+  border-radius: 4px;
+}
+
+.results-list::-webkit-scrollbar-thumb {
+  /* 青蓝紫霓虹渐变 */
+  background: linear-gradient(180deg, 
+              var(--accent-cyan) 0%, 
+              var(--accent-blue) 50%, 
+              var(--accent-purple) 100%);
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 轻微光晕 */
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+.results-list::-webkit-scrollbar-thumb:hover {
+  /* 悬停时增强渐变饱和度 */
+  background: linear-gradient(180deg, 
+              #06b6d4 0%, 
+              #0ea5e9 50%, 
+              #c084fc 100%);
+  /* 增强光晕效果 */
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.5),
+              0 0 24px rgba(167, 139, 250, 0.3);
+}
+
+/* 书签项 - 轻量卡片 */
+.bookmark-item {
+  padding: 4px 0px;
+  margin: 2px 0;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  /* 加快过渡速度 - 提升响应灵敏度 */
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.bookmark-item.selected {
+  /* 增强青蓝紫渐变背景 - 更鲜明的科技光感 */
+  background: linear-gradient(135deg, 
+              rgba(14, 165, 233, 0.16) 0%, 
+              rgba(167, 139, 250, 0.12) 100%);
+  border-color: #bdc3c7;
+  /* 增强外发光阴影 - 霓虹光晕效果 */
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25),
+              0 2px 8px rgba(167, 139, 250, 0.15),
+              0 0 0 1px var(--accent-cyan),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* 书签图标 - 简洁设计 */
+.bookmark-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: transparent;
+  padding: 4px;
+  /* 加快图标过渡速度 */
+  transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.bookmark-item.selected .bookmark-icon {
+  /* 完全透明 - 消除视觉边界，与选中项背景完全融合 */
+  background: transparent !important;
+  /* 移除边框圆角 - 避免视觉分离 */
+  border-radius: 0;
+  /* 移除内边距 - 消除白色空白区域 */
+  padding: 0;
+  /* 移除外发光 - 保持纯净视觉 */
+  box-shadow: none;
+  /* 保留缩放效果 */
+  transform: scale(1.05);
+}
+
+.bookmark-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+/* 书签内容 */
+.bookmark-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.bookmark-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  transition: color 0.2s ease;
+}
+
+.bookmark-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  line-height: 1.2;
+  color: var(--text-secondary);
+  margin-top: 1px;
+  opacity: 1;
+  transition: color 0.2s ease;
+}
+
+.bookmark-path {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+}
+
+.bookmark-url {
+  flex-shrink: 0;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 8px;
+  color: var(--text-secondary);
+}
+
+/* 文件夹标识 */
+.folder-indicator {
+  display: inline-block;
+  margin-left: 4px;
+  /* 青绿色 - 活力标识 */
+  color: var(--accent-teal);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 44px;
+  opacity: 0.25;
+  filter: grayscale(20%);
+}
+
+.empty-state p {
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+/* 高亮匹配文本 - 标题主要高亮 */
+.highlight {
+  /* 明亮科技蓝 - 醒目清晰 */
+  color: var(--accent-blue-light);
+  font-weight: 800;
+  text-shadow: 0 0 8px var(--glow-cyan);
+}
+
+/* 路径高亮样式 - 次要信息提示 */
+.highlight-path {
+  /* 柔和紫色 - 区分层次 */
+  color: var(--accent-purple);
+  font-weight: 500;
+}
+
+/* 动画效果 - 流畅自然 */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bookmark-item {
+  animation: fadeInSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 交错动画 - 轻快节奏 */
+.bookmark-item:nth-child(1) { animation-delay: 0s; }
+.bookmark-item:nth-child(2) { animation-delay: 0.02s; }
+.bookmark-item:nth-child(3) { animation-delay: 0.04s; }
+.bookmark-item:nth-child(4) { animation-delay: 0.06s; }
+.bookmark-item:nth-child(5) { animation-delay: 0.08s; }
+.bookmark-item:nth-child(n+6) { animation-delay: 0.1s; }
+
+/* 加载状态 */
+.loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.loading::before {
+  content: '';
+  width: 32px;
+  height: 32px;
+  border: 2.5px solid var(--border-light);
+  /* 青蓝渐变加载动画 - 科技感 */
+  border-top-color: var(--accent-cyan);
+  border-right-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  box-shadow: 0 0 16px var(--glow-cyan);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 键盘快捷键提示(未来可扩展) */
+.shortcut-hint {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  background: var(--bg-tertiary);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.bookmark-item:hover .shortcut-hint {
+  opacity: 0.7;
+}
+
+/* 背景装饰效果 - 轻柔渐变 */
+.search-panel::before {
+  display: none;
+}
+
+.search-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 优化文本选择样式 */
+::selection {
+  /* 青色高亮选区 */
+  background: rgba(6, 182, 212, 0.28);
+  color: var(--text-primary);
+}
+
+/* 响应式调整 - 为小屏幕优化 */
+@media (max-width: 600px) {
+  body, .search-panel {
+    width: 100%;
+  }
+}

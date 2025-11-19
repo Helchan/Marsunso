@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marsunso Bookmark Quick Search</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app" class="search-panel">
+    <!-- 搜索框容器 - 固定不滚动 -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        id="searchInput" 
+        class="search-input" 
+        placeholder="Enter keywords.."
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+      />
+      <div class="search-glow"></div>
+    </div>
+    
+    <!-- 下拉列表容器 - 独立滚动 -->
+    <div id="resultsList" class="results-list"></div>
+    
+    <!-- 空状态提示 -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="empty-icon">🔍</div>
+      <p>No results found.</p>
+    </div>
+  </div>
+  
+  <script src="scripts/pinyin-pro.js"></script>
+  <script src="scripts/pinyinUtil.js"></script>
+  <script src="scripts/bookmarkManager.js"></script>
+  <script src="scripts/filter.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

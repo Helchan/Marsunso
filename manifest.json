@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Marsunso - Bookmark Quick Search",
+  "version": "1.1.1",
+  "description": "Quickly search and access browser bookmarks via shortcuts to improve browsing efficiency.",
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "permissions": [
+    "bookmarks",
+    "tabs",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Marsunso Bookmark Quick Search"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+K",
+        "mac": "Command+K"
+      },
+      "description": "Open Bookmark Quick Search"
+    }
+  }
+}
