@@ -15,7 +15,7 @@
   // 搜索延迟，避免连续输入时频繁触发搜索（毫秒）
   const SEARCH_DELAY = 50;
   // 2秒缓存超时时间（这个时间内重开面板则还原输入框内容）
-  const CACHE_TIMEOUT = 2000; 
+  const CACHE_TIMEOUT = 1500; 
   
   // Favicon 缓存（内存级，优化性能）
   const faviconCache = new Map();
