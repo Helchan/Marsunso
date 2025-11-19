@@ -18,3 +18,5 @@ node_modules/
 # Build
 dist/
 build/
+build_temp/
+*.zip
