@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.0.2-blue.svg)](https://github.com/your-username/quicker)
+[![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/your-username/quicker)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-88%2B-brightgreen.svg)](https://www.google.com/chrome/)
 
