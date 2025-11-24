@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-1.0.2-blue.svg)](https://github.com/your-username/quicker)
+[![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/Helchan/Marsunso.git)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Chrome](https://img.shields.io/badge/chrome-88%2B-brightgreen.svg)](https://www.google.com/chrome/)
 
@@ -83,8 +83,8 @@ Marsunso 是一个轻量级的 Chrome 书签快捷搜索插件，旨在解决传
 
 1. **克隆或下载项目**：
    ```bash
-   git clone https://github.com/your-username/quicker.git
-   cd quicker
+   git clone https://github.com/Helchan/Marsunso.git
+   cd Marsunso
    ```
 
 2. **打开 Chrome 扩展程序管理页面**：
@@ -99,7 +99,7 @@ Marsunso 是一个轻量级的 Chrome 书签快捷搜索插件，旨在解决传
    - 选择项目根目录（包含 `manifest.json` 的文件夹）
 
 5. **验证安装**：
-   - 扩展程序列表中出现 "Quicker - 书签快捷搜索"
+   - 扩展程序列表中出现 "Marsunso - 书签快捷搜索"
    - 按 `Ctrl+K` 或 `Command+K` 测试唤起面板
 
 ### 兼容性要求
@@ -285,7 +285,7 @@ graph TB
 ### 项目结构
 
 ```
-Quicker/
+Marsunso/
 ├── manifest.json                  # 扩展配置清单（Manifest V3）
 ├── popup.html                    # 搜索面板界面结构
 ├── popup.css                     # 样式表（Spotlight 风格）
@@ -368,8 +368,8 @@ Quicker/
 
 1. **克隆项目**：
    ```bash
-   git clone https://github.com/your-username/quicker.git
-   cd quicker
+   git clone https://github.com/Helchan/Marsunso.git
+   cd Marsunso
    ```
 
 2. **加载扩展**：
@@ -414,7 +414,7 @@ Quicker/
 2. **创建 ZIP 包**：
    ```bash
    # 在项目根目录执行
-   zip -r quicker-v1.0.2.zip . -x "*.git*" "*.DS_Store" "node_modules/*"
+   zip -r marsunso-v1.1.1.zip . -x "*.git*" "*.DS_Store" "node_modules/*"
    ```
 
 3. **上传到 Chrome 网上应用店**：
@@ -469,9 +469,9 @@ node tests/test-navigate-up.js
 ```javascript
 // 在 popup.html 中添加 <script src="tests/test.js"></script>
 // 然后在控制台运行：
-QuickerTest.runAllTests();         // 运行所有测试
-QuickerTest.testSearchEngine();    // 测试搜索引擎
-QuickerTest.performanceTest();     // 性能测试
+MarsunsoTest.runAllTests();         // 运行所有测试
+MarsunsoTest.testSearchEngine();    // 测试搜索引擎
+MarsunsoTest.performanceTest();     // 性能测试
 ```
 
 **测试覆盖范围**：
@@ -514,7 +514,7 @@ QuickerTest.performanceTest();     // 性能测试
 
 我们欢迎任何形式的贡献，包括但不限于：
 
-- 🐛 **报告 Bug**：在 [Issues](https://github.com/your-username/quicker/issues) 页面提交问题
+- 🐛 **报告 Bug**：在 [Issues](https://github.com/Helchan/Marsunso/issues) 页面提交问题
 - 💡 **功能建议**：提出新功能或改进建议
 - 📝 **文档改进**：修正文档错误或补充说明
 - 🔧 **代码贡献**：提交 Pull Request 修复 Bug 或添加功能
@@ -622,7 +622,7 @@ QuickerTest.performanceTest();     // 性能测试
 ```
 MIT License
 
-Copyright (c) 2024 Quicker Contributors
+Copyright (c) 2024 Marsunso Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -659,8 +659,8 @@ SOFTWARE.
 
 **如果这个项目对你有帮助，欢迎 Star ⭐️ 支持！**
 
-[报告问题](https://github.com/your-username/quicker/issues) • [功能建议](https://github.com/your-username/quicker/issues) • [贡献代码](https://github.com/your-username/quicker/pulls)
+[报告问题](https://github.com/Helchan/Marsunso/issues) • [功能建议](https://github.com/Helchan/Marsunso/issues) • [贡献代码](https://github.com/Helchan/Marsunso/pulls)
 
-Made with ❤️ by Quicker Contributors
+Made with ❤️ by Marsunso Contributors
 
 </div>
