@@ -39,6 +39,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'keepAlive') {
     sendResponse({ status: 'alive' });
+    return false; // 同步响应，不需要保持通道开放
   } else if (request.action === 'saveSearchState') {
     // 保存搜索状态
     const data = {
@@ -78,5 +79,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     return true; // 保持消息通道开放
   }
-  return true;
+  return false; // 未知消息类型，不保持通道
 });
