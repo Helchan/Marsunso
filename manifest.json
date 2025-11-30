@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Marsunso - Bookmark Quick Search",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Quickly search and access browser bookmarks via shortcuts to improve browsing efficiency.",
   "icons": {
     "16": "images/icon16.png",

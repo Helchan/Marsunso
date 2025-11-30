@@ -14,8 +14,10 @@
   let searchTimer = null;
   // 搜索延迟，避免连续输入时频繁触发搜索（毫秒）
   const SEARCH_DELAY = 50;
-  // 2秒缓存超时时间（这个时间内重开面板则还原输入框内容）
-  const CACHE_TIMEOUT = 1500; 
+  // 1.5秒缓存超时时间（这个时间内重开面板则还原输入框内容）
+  const CACHE_TIMEOUT = 1500;
+  // 最多可见的下拉列表项数量（用于控制下拉列表容器的高度-最多完整显示如下条数的下拉项）
+  const MAX_VISIBLE_ITEMS = 12;
   
   // Favicon 缓存（内存级，优化性能）
   const faviconCache = new Map();
@@ -167,6 +169,9 @@
     if (!results || results.length === 0) {
       // 无结果时隐藏列表
       resultsList.style.display = 'none';
+      // 复位高度与滚动
+      resultsList.style.maxHeight = '';
+      resultsList.style.overflowY = 'hidden';
       return;
     }
     
@@ -185,10 +190,26 @@
     
     resultsList.appendChild(fragment);
     
-    // 触发渐入动画
+    // 触发渐入动画并在下一帧测量高度
     requestAnimationFrame(() => {
       resultsList.style.transition = 'opacity 0.3s ease';
       resultsList.style.opacity = '1';
+
+      // 动态计算并设置下拉列表容器可视高度
+      const items = resultsList.querySelectorAll('.bookmark-item');
+      if (items.length > 0) {
+        const itemHeight = items[0].offsetHeight; // 含自身 padding，不含 margin
+        const visibleCount = Math.min(items.length, MAX_VISIBLE_ITEMS);
+        // 额外高度 = 相邻项间距(2px * (visibleCount - 1)) + 容器上下内边距(2px + 2px) + 首尾项 margin(2px + 2px)
+        const extras = (visibleCount - 1) * 2 + 8;
+        const computedMaxHeight = Math.round(visibleCount * itemHeight + extras);
+
+        resultsList.style.maxHeight = computedMaxHeight + 'px';
+        resultsList.style.overflowY = items.length > MAX_VISIBLE_ITEMS ? 'auto' : 'hidden';
+      } else {
+        resultsList.style.maxHeight = '';
+        resultsList.style.overflowY = 'hidden';
+      }
     });
     
     // 高亮第一项
@@ -425,6 +446,7 @@
   function moveSelection(direction) {
     if (currentResults.length === 0) return;
     
+    const prevIndex = selectedIndex;
     selectedIndex += direction;
     
     // 循环选择
@@ -435,7 +457,10 @@
     }
     
     updateSelection();
-    scrollToSelected();
+    // 检测是否发生循环跳转
+    const isLoopJump = (prevIndex === currentResults.length - 1 && selectedIndex === 0) ||
+                       (prevIndex === 0 && selectedIndex === currentResults.length - 1);
+    scrollToSelected(isLoopJump);
   }
 
   /**
@@ -445,7 +470,7 @@
     if (currentResults.length === 0) return;
     selectedIndex = 0;
     updateSelection();
-    scrollToSelected();
+    scrollToSelected(true);
   }
 
   /**
@@ -455,7 +480,7 @@
     if (currentResults.length === 0) return;
     selectedIndex = currentResults.length - 1;
     updateSelection();
-    scrollToSelected();
+    scrollToSelected(true);
   }
 
   /**
@@ -474,11 +499,24 @@
 
   /**
    * 滚动到选中项
+   * @param {boolean} forceAlign - 是否强制对齐（循环跳转时使用）
    */
-  function scrollToSelected() {
+  function scrollToSelected(forceAlign = false) {
     const selectedItem = resultsList.querySelector('.bookmark-item.selected');
     if (selectedItem) {
-      selectedItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      if (forceAlign) {
+        // 循环跳转时，直接控制 scrollTop 确保精确对齐
+        if (selectedIndex === 0) {
+          // 跳到第一项：滚动到顶部
+          resultsList.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          // 跳到最后一项：滚动到底部
+          resultsList.scrollTo({ top: resultsList.scrollHeight, behavior: 'smooth' });
+        }
+      } else {
+        // 正常移动时使用 nearest
+        selectedItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
     }
   }
   
