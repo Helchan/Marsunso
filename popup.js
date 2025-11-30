@@ -167,15 +167,18 @@
     resultsList.innerHTML = '';
     
     if (!results || results.length === 0) {
-      // 无结果时隐藏列表
+      // 无结果时隐藏列表，显示空状态提示（无匹配项提示）
       resultsList.style.display = 'none';
+      emptyState.style.display = 'flex';
       // 复位高度与滚动
       resultsList.style.maxHeight = '';
       resultsList.style.overflowY = 'hidden';
       return;
     }
     
+    // 有结果时显示列表，隐藏空状态
     resultsList.style.display = 'block';
+    emptyState.style.display = 'none';
     
     // 添加渐入效果
     resultsList.style.opacity = '0';
@@ -737,6 +740,9 @@
    * @param {MouseEvent} e - 鼠标事件
    */
   function handleItemMouseMove(e) {
+    // 过滤零位移的伪 mousemove（DOM 切换时浏览器补发的事件）
+    if (e.movementX === 0 && e.movementY === 0) return;
+    
     const item = e.target.closest('.bookmark-item');
     if (!item) return;
     
