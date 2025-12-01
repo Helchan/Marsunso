@@ -4,14 +4,32 @@
  */
 
 const SearchEngine = (function() {
-  const MAX_RESULTS = 15;
-
+  // 初始化配置加载状态
+  let configReady = false;
+  
+  // 在模块加载时立即异步加载配置
+  if (typeof Config !== 'undefined') {
+    Config.waitForConfig().then(() => {
+      configReady = true;
+      console.log('SearchEngine: 配置加载完成, maxResults =', Config.get('maxResults'));
+    }).catch(err => {
+      console.error('SearchEngine: 配置加载失败', err);
+      configReady = true; // 即使失败也标记为就绪，使用默认值
+    });
+  }
+  
   /**
    * 执行搜索
    * @param {string} query - 搜索查询
    * @returns {Promise<Array>} 搜索结果
    */
   async function search(query) {
+    // 确保配置已加载
+    if (!configReady && typeof Config !== 'undefined') {
+      await Config.waitForConfig();
+      configReady = true;
+    }
+    
     // 清理输入
     query = cleanInput(query);
     
@@ -32,8 +50,17 @@ const SearchEngine = (function() {
         break;
     }
     
+    // 从配置中获取最大结果数量，如果未读到则默认为 100
+    let maxResults = 100;
+    if (typeof Config !== 'undefined') {
+      const configValue = Config.get('maxResults');
+      if (typeof configValue === 'number' && configValue > 0) {
+        maxResults = configValue;
+      }
+    }
+    
     // 限制结果数量并附加搜索关键词信息
-    return results.slice(0, MAX_RESULTS).map(r => ({
+    return results.slice(0, maxResults).map(r => ({
       ...r,
       searchQuery: query,
       searchMode: mode

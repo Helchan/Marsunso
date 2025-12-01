@@ -6,7 +6,7 @@
 const Config = (function() {
   // 默认配置
   const DEFAULT_CONFIG = {
-    maxResults: 15,              // 最大显示数量
+    maxResults: 50,              // 最大显示数量(Filter.js中SearchEngine用于限制过滤的结果数量)
     searchDelay: 150,            // 搜索防抖延迟(ms)
     enablePinyin: true,          // 是否启用拼音搜索
     theme: 'light',              // 主题: 'light' | 'dark'
@@ -15,6 +15,7 @@ const Config = (function() {
   };
 
   let currentConfig = { ...DEFAULT_CONFIG };
+  let configLoaded = false;    // 配置加载状态标记
 
   /**
    * 加载配置
@@ -25,10 +26,16 @@ const Config = (function() {
       const result = await chrome.storage.sync.get('config');
       if (result.config) {
         currentConfig = { ...DEFAULT_CONFIG, ...result.config };
+      } else {
+        // 如果没有保存过配置，使用默认配置
+        currentConfig = { ...DEFAULT_CONFIG };
       }
+      configLoaded = true;
       return currentConfig;
     } catch (error) {
       console.error('加载配置失败:', error);
+      currentConfig = { ...DEFAULT_CONFIG };
+      configLoaded = true;
       return currentConfig;
     }
   }
@@ -56,6 +63,33 @@ const Config = (function() {
    */
   function get(key) {
     return currentConfig[key];
+  }
+
+  /**
+   * 等待配置加载完成
+   * @returns {Promise<Object>} 配置对象
+   */
+  async function waitForConfig() {
+    if (configLoaded) {
+      return currentConfig;
+    }
+    return await loadConfig();
+  }
+
+  /**
+   * 清除存储中的配置（用于调试）
+   * @returns {Promise<boolean>} 是否成功
+   */
+  async function clearStorage() {
+    try {
+      await chrome.storage.sync.remove('config');
+      currentConfig = { ...DEFAULT_CONFIG };
+      console.log('配置已清除，重置为默认值');
+      return true;
+    } catch (error) {
+      console.error('清除配置失败:', error);
+      return false;
+    }
   }
 
   /**
@@ -96,7 +130,9 @@ const Config = (function() {
     get,
     set,
     reset,
-    getAll
+    getAll,
+    waitForConfig,
+    clearStorage
   };
 })();
 
