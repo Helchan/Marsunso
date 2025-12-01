@@ -325,11 +325,12 @@ body {
   text-shadow: 0 0 8px var(--glow-cyan);
 }
 
-/* 路径高亮样式 - 次要信息提示 */
+/* 路径高亮样式 - 统一使用蓝色 */
 .highlight-path {
-  /* 柔和紫色 - 区分层次 */
-  color: var(--accent-purple);
+  /* 明亮科技蓝 - 与标题统一 */
+  color: var(--accent-blue-light);
   font-weight: 500;
+  text-shadow: 0 0 8px var(--glow-cyan);
 }
 
 /* 动画效果 - 流畅自然 */

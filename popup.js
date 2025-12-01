@@ -67,6 +67,165 @@
   }
 
   /**
+   * 获取用于展示的 URL（hostname + pathname，不含协议）
+   * @param {string} url - 完整 URL
+   * @returns {string} 展示用 URL
+   */
+  function getDisplayUrl(url) {
+    try {
+      const u = new URL(url);
+      const host = u.hostname;
+      let path = u.pathname || '';
+      if (path === '/') path = '';
+      return host + path;
+    } catch (error) {
+      // 兜底：如果不是完整URL，按原样返回
+      return url || '';
+    }
+  }
+
+  /**
+   * 将长文本做中间省略（保留头尾），用于更可读的单行展示
+   * @param {string} text - 原始文本
+   * @param {number} maxChars - 最大字符数
+   * @returns {string} 省略后的文本
+   */
+  function toMiddleEllipsis(text, maxChars = 60) {
+    if (!text || text.length <= maxChars) return text;
+    const half = Math.max(10, Math.floor((maxChars - 1) / 2)); // 1 为中间的省略符
+    return text.slice(0, half) + '…' + text.slice(-half);
+  }
+
+  /**
+   * 基于域名优先的中间省略算法
+   * 策略：
+   * 1. 如果域名都放不下，保留域名前缀 + …
+   * 2. 如果域名能放下但完整URL放不下，显示 域名 + … + URL末尾路径
+   * @param {HTMLElement} urlEl - URL元素
+   * @param {string} fullText - 完整URL文本（不含协议）
+   */
+  function applyHostAwareEllipsis(urlEl, fullText) {
+    // 拆分为 host 与 path（fullText 为不含协议的展示文本：host + pathname）
+    const slashIdx = fullText.indexOf('/');
+    const host = slashIdx === -1 ? fullText : fullText.slice(0, slashIdx);
+    const path = slashIdx === -1 ? '' : fullText.slice(slashIdx);
+
+    // 测量函数：将文本放入元素，判断是否在单行内放得下
+    function fits(text) {
+      urlEl.textContent = text;
+      return urlEl.scrollWidth <= urlEl.clientWidth;
+    }
+
+    // 1) 先看单独的域名是否能放下
+    if (!fits(host)) {
+      // 域名都放不下：保留域名前缀 + …
+      let low = 1, high = host.length, best = 0;
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        const candidate = host.slice(0, mid) + '…';
+        urlEl.textContent = candidate;
+        if (urlEl.scrollWidth <= urlEl.clientWidth) {
+          best = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+      urlEl.textContent = best > 0 ? (host.slice(0, best) + '…') : '…';
+      return;
+    }
+
+    // 2) 域名能放下：如果没有路径，直接放域名；有路径则采用"域名 + … + 末尾路径"
+    if (!path) {
+      urlEl.textContent = host;
+      return;
+    }
+
+    let low = 1, high = path.length, best = 0;
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      const candidate = host + '/…' + path.slice(-mid);
+      urlEl.textContent = candidate;
+      if (urlEl.scrollWidth <= urlEl.clientWidth) {
+        best = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    // 至少保留 1 个字符作为尾部路径
+    const tailLen = Math.max(1, best);
+    urlEl.textContent = host + '/…' + path.slice(-tailLen);
+  }
+
+  /**
+   * 仅用于计算"域名优先 + '/…' + 尾部"所需的段信息（不对尾部做高亮）
+   * @param {HTMLElement} urlEl - URL元素
+   * @param {string} fullText - 完整URL文本（不含协议）
+   * @returns {Object} { truncated, host, path, tailLen, text }
+   */
+  function computeHostAwareEllipsisSegments(urlEl, fullText) {
+    const slashIdx = fullText.indexOf('/');
+    const host = slashIdx === -1 ? fullText : fullText.slice(0, slashIdx);
+    const path = slashIdx === -1 ? '' : fullText.slice(slashIdx);
+
+    function fits(text) {
+      urlEl.textContent = text;
+      return urlEl.scrollWidth <= urlEl.clientWidth;
+    }
+
+    // 域名都放不下：保留前缀 + …
+    if (!fits(host)) {
+      let low = 1, high = host.length, best = 0;
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        const candidate = host.slice(0, mid) + '…';
+        urlEl.textContent = candidate;
+        if (urlEl.scrollWidth <= urlEl.clientWidth) {
+          best = mid;
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+      return {
+        truncated: true,
+        host: host.slice(0, Math.max(0, best)),
+        path: '',
+        tailLen: 0,
+        text: (best > 0 ? host.slice(0, best) : '') + '…'
+      };
+    }
+
+    // 域名能放下，无路径
+    if (!path) {
+      return { truncated: false, host, path: '', tailLen: 0, text: host };
+    }
+
+    // 域名能放下，有路径 -> 计算尾部长度
+    let low = 1, high = path.length, best = 0;
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      const candidate = host + '/…' + path.slice(-mid);
+      urlEl.textContent = candidate;
+      if (urlEl.scrollWidth <= urlEl.clientWidth) {
+        best = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    const tailLen = Math.max(1, best);
+    return {
+      truncated: true,
+      host,
+      path,
+      tailLen,
+      text: host + '/…' + path.slice(-tailLen)
+    };
+  }
+
+  /**
    * 预加载所有书签的图标(仅构建缓存映射,无需实际请求)
    */
   async function prefetchAllFavicons() {
@@ -276,12 +435,90 @@
     }
     
     // 书签 URL（右对齐）
-    if (!bookmark.isFolder && bookmark.url && bookmark.domain) {
-      const url = document.createElement('span');
-      url.className = 'bookmark-url';
-      // 应用高亮
-      url.innerHTML = highlightText(bookmark.domain, bookmark.urlMatchRanges || []);
-      meta.appendChild(url);
+    if (!bookmark.isFolder && bookmark.url) {
+      const urlSpan = document.createElement('span');
+      urlSpan.className = 'bookmark-url';
+      const displayUrl = getDisplayUrl(bookmark.url);
+      // 先按原样显示
+      urlSpan.textContent = displayUrl;
+      meta.appendChild(urlSpan);
+
+      // 下一帧测量是否被单行省略；只高亮域名部分
+      requestAnimationFrame(() => {
+        try {
+          const isTruncated = urlSpan.scrollWidth > urlSpan.clientWidth;
+          const slashIdx = displayUrl.indexOf('/');
+          const hostLen = slashIdx === -1 ? displayUrl.length : slashIdx;
+          const hostRanges = (bookmark.urlMatchRanges || []).filter(([s, e]) => e <= hostLen);
+
+          if (!isTruncated) {
+            // 未截断：只对域名进行高亮
+            urlSpan.innerHTML = highlightText(displayUrl, hostRanges || []);
+            return;
+          }
+
+          // 截断：计算域名优先的 '/…' + 尾部段信息
+          const seg = computeHostAwareEllipsisSegments(urlSpan, displayUrl);
+
+          if (!seg.truncated) {
+            // 只有域名，无路径；高亮域名
+            urlSpan.innerHTML = highlightText(seg.text, hostRanges || []);
+          } else if (!seg.path) {
+            // 域名自身也被截断为前缀 + …，避免偏移错误，不做高亮
+            urlSpan.textContent = seg.text;
+          } else {
+            // 域名能放下：仅高亮域名，尾部不高亮
+            const hostHtml = highlightText(seg.host, hostRanges || []);
+            const tailPlain = seg.path.slice(-seg.tailLen);
+            urlSpan.innerHTML = hostHtml + '/…' + tailPlain;
+          }
+
+          // 仅在确实省略时，开启悬浮浮层展示完整URL
+          let urlOverlay = null;
+          
+          function showUrlOverlay(targetEl, text) {
+            if (!text) return;
+            if (!urlOverlay) {
+              urlOverlay = document.createElement('div');
+              urlOverlay.style.cssText = `
+                position: fixed;
+                z-index: 9999;
+                max-width: 80vw;
+                background: rgba(255,255,255,0.95);
+                color: #1a202c;
+                font-size: 12px;
+                padding: 2px 5px;
+                border-radius: 5px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.15), 0 0 0 1px rgba(203,213,225,0.3);
+                border: 1px solid rgba(203,213,225,0.6);
+                white-space: normal;
+                word-break: break-all;
+                line-height: 1.4;
+                display: none;
+                pointer-events: none;
+              `;
+              document.body.appendChild(urlOverlay);
+            }
+            urlOverlay.textContent = text;
+            const rect = targetEl.getBoundingClientRect();
+            const top = Math.max(8, rect.top - 4);
+            urlOverlay.style.display = 'block';
+            const overlayWidth = urlOverlay.offsetWidth;
+            const left = Math.min(Math.max(8, rect.left), window.innerWidth - overlayWidth - 8);
+            urlOverlay.style.top = `${top}px`;
+            urlOverlay.style.left = `${left}px`;
+          }
+          
+          function hideUrlOverlay() {
+            if (urlOverlay) urlOverlay.style.display = 'none';
+          }
+          
+          urlSpan.addEventListener('mouseenter', () => showUrlOverlay(urlSpan, displayUrl));
+          urlSpan.addEventListener('mouseleave', hideUrlOverlay);
+        } catch (e) {
+          // 忽略测量错误
+        }
+      });
     }
     
     content.appendChild(title);
