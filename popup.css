@@ -92,7 +92,7 @@ body {
   color: var(--text-primary);
   background: var(--bg-secondary);
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   outline: none;
   box-sizing: border-box;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -105,11 +105,8 @@ body {
 
 .search-input:focus {
   background: var(--bg-secondary);
-  /* 聚焦状态：粗内发光（2.5px）+ 三层外光晕 - 强化视觉焦点 */
-  box-shadow: 0 0 0 4px var(--glow-cyan),          /* 外层青色光圈 4px */
-              0 0 24px var(--glow-blue),           /* 扩散蓝色光晕 */
-              0 4px 12px rgba(6, 182, 212, 0.2),   /* 底部投影 */
-              inset 0 0 0 2.5px var(--accent-cyan); /* 内发光粗边框 2.5px */
+  /* 内发光粗边框 2.5px */
+  box-shadow: inset 0 0 0 2.5px var(--accent-cyan); 
   transform: translateY(-1px);
 }
 
@@ -166,11 +163,11 @@ body {
 
 /* 书签项 - 轻量卡片 */
 .bookmark-item {
-  padding: 4px 0px;
+  padding: 4px 2px;
   margin: 2px 0;
   color: var(--text-primary);
   background: var(--bg-secondary);
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -188,19 +185,14 @@ body {
               rgba(14, 165, 233, 0.16) 0%, 
               rgba(167, 139, 250, 0.12) 100%);
   border-color: #bdc3c7;
-  /* 增强外发光阴影 - 霓虹光晕效果 */
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25),
-              0 2px 8px rgba(167, 139, 250, 0.15),
-              0 0 0 1px var(--accent-cyan),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 /* 书签图标 - 简洁设计 */
 .bookmark-icon {
   width: 25px;
   height: 25px;
-  margin-left: 12px;
-  margin-right: 12px;
+  margin-left: 5px;
+  margin-right: 10px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
